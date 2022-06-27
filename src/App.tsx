@@ -8,7 +8,7 @@ function App() {
     }
 
     let startValue = 0
-    let endValue = 5
+    let endValue = 10
     const [countValue, setCountValue] = useState<number>(startValue)
 
     useEffect(() => {
