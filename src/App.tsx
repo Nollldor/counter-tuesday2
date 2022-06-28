@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {ChangeEvent, useEffect, useState} from 'react';
 import './App.css';
 
 
@@ -7,8 +7,9 @@ function App() {
         countValue: "countValue"
     }
 
-    let startValue = 0
-    let endValue = 10
+    let [startValue, setStartValue] = useState<number>(0)
+    let [endValue, setEndValue] = useState<number>(10)
+
     const [countValue, setCountValue] = useState<number>(startValue)
 
     useEffect(() => {
@@ -29,13 +30,33 @@ function App() {
         localStorage.setItem(localStorageKeys.countValue, JSON.stringify(startValue))
     }
 
+    const onChangeHandler1 = (e: ChangeEvent<HTMLInputElement>) => {
+        setStartValue(JSON.parse(e.currentTarget.value))
+        /*console.log(e)*/
+    }
 
+    const onChangeHandler2 = (e: ChangeEvent<HTMLInputElement>) => {
+        setEndValue(JSON.parse(e.currentTarget.value))
+        /*console.log(e)*/
+    }
+
+    const setHandler = () => {
+
+    }
     return (
         <div className="App">
 
-            <h1>{countValue}</h1>
-            <button disabled={countValue === endValue} onClick={incHandler}>inc</button>
-            <button disabled={countValue === startValue} onClick={resetHandler}>reset</button>
+            <div>
+                <input type={"number"} value={startValue} onChange={onChangeHandler1}/>
+                <input type={"number"} value={endValue} onChange={onChangeHandler2}/>
+                <button onClick={setHandler}>set</button>
+            </div>
+            <div className="">
+                <h1>{countValue}</h1>
+                <button disabled={countValue === endValue} onClick={incHandler}>inc</button>
+                <button disabled={countValue === startValue} onClick={resetHandler}>reset</button>
+            </div>
+
         </div>
     );
 }
