@@ -1,61 +1,86 @@
-import React, {ChangeEvent, useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import './App.css';
+import {Settings} from "./Components/Settings";
+import {Counter} from "./Components/Counter";
 
 
 function App() {
     const localStorageKeys = {
-        countValue: "countValue"
+        countValue: "countValue",
+        startValue: "startValue",
+        endValue: "endValue",
     }
 
-    let [startValue, setStartValue] = useState<number>(0)
-    let [endValue, setEndValue] = useState<number>(10)
+    const [startValue, setStartValue] = useState<number>(0)
+    const [endValue, setEndValue] = useState<number>(10)
+    const [waitSettings, setWaitSettings] = useState<boolean>(false)
+    const [error, setError] = useState<string | null>(null)
 
     const [countValue, setCountValue] = useState<number>(startValue)
 
     useEffect(() => {
         const countValueFromLS = localStorage.getItem(localStorageKeys.countValue)
-        countValueFromLS && setCountValue(JSON.parse(countValueFromLS))
+        if (countValueFromLS) {
+            setCountValue(JSON.parse(countValueFromLS))
+        }
+
+        const startValueFromLS = localStorage.getItem(localStorageKeys.startValue)
+        if (startValueFromLS) {
+            setStartValue(JSON.parse(startValueFromLS))
+        }
+
+        const endValueFromLS = localStorage.getItem(localStorageKeys.endValue)
+        if (endValueFromLS) {
+            setEndValue(JSON.parse(endValueFromLS))
+        }
+
     }, [])
 
     useEffect(() => {
         localStorage.setItem(localStorageKeys.countValue, JSON.stringify(countValue))
-    }, [countValue])
+        localStorage.setItem(localStorageKeys.startValue, JSON.stringify(startValue))
+        localStorage.setItem(localStorageKeys.endValue, JSON.stringify(endValue))
+    }, [countValue, startValue, endValue])
 
-    const incHandler = () => {
+
+    const incCount = () => {
         setCountValue(countValue + 1)
     }
 
-    const resetHandler = () => {
+    const resetCount = () => {
         setCountValue(startValue)
-        localStorage.setItem(localStorageKeys.countValue, JSON.stringify(startValue))
     }
 
-    const onChangeHandler1 = (e: ChangeEvent<HTMLInputElement>) => {
-        setStartValue(JSON.parse(e.currentTarget.value))
-        /*console.log(e)*/
+    const setStartEnd = () => {
+        setStartValue(startValue)
+        setEndValue(endValue)
+        setCountValue(startValue)
     }
 
-    const onChangeHandler2 = (e: ChangeEvent<HTMLInputElement>) => {
-        setEndValue(JSON.parse(e.currentTarget.value))
-        /*console.log(e)*/
-    }
 
-    const setHandler = () => {
-
-    }
     return (
         <div className="App">
 
-            <div>
-                <input type={"number"} value={startValue} onChange={onChangeHandler1}/>
-                <input type={"number"} value={endValue} onChange={onChangeHandler2}/>
-                <button onClick={setHandler}>set</button>
-            </div>
-            <div className="">
-                <h1>{countValue}</h1>
-                <button disabled={countValue === endValue} onClick={incHandler}>inc</button>
-                <button disabled={countValue === startValue} onClick={resetHandler}>reset</button>
-            </div>
+            <Settings
+                start={startValue}
+                end={endValue}
+                changeStart={setStartValue}
+                changeEnd={setEndValue}
+                setWaitSettings={setWaitSettings}
+                set={setStartEnd}
+                setError={setError}
+                error={error}
+            />
+
+            <Counter
+                start={startValue}
+                end={endValue}
+                count={countValue}
+                inc={incCount}
+                reset={resetCount}
+                waitSettings={waitSettings}
+                error={error}
+            />
 
         </div>
     );
