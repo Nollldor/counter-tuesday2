@@ -20,16 +20,13 @@ function App() {
 
     const constructError = (start: number, end: number) => {
         setError(null)
-        if (start < 0) {
-            setError("wrong start")
-        }
-
-        if (end <= start) {
-            setError("wrong max")
-        }
 
         if (start < 0 && end <= start) {
             setError("wrong start, wrong max")
+        }else if(end <= start){
+            setError("wrong max")
+        }else if (start < 0) {
+            setError("wrong start")
         }
     }
 
