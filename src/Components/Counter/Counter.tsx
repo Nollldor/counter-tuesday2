@@ -1,5 +1,6 @@
 import React, {FC, useState} from "react";
-import {Button} from "./Button";
+import {Button} from "../Button/Button";
+import styles from './Counter.module.css'
 
 type CounterPropsType = {
     start: number
@@ -22,13 +23,17 @@ export const Counter: FC<CounterPropsType> = ({
                                                   ...props
                                               }) => {
 
-    const displayValue = waitSettings ? "enter values end press set"
+    const displayValue = waitSettings ? "enter values and press set"
         : count
     return (
-        <div className="">
-            <h1>{error || displayValue}</h1>
-            <Button title={"inc"} disabled={count === end || waitSettings || error !== null} onClick={inc}/>
-            <Button title={"reset"} disabled={count === start || waitSettings || error !== null} onClick={reset}/>
+        <div className={styles.counter}>
+            <div className={styles.display}>
+                <div className={styles.displayTitle}>{error || displayValue}</div>
+            </div>
+            <div className={styles.buttons}>
+                <Button title={"inc"} disabled={count === end || waitSettings || error !== null} onClick={inc}/>
+                <Button title={"reset"} disabled={count === start || waitSettings || error !== null} onClick={reset}/>
+            </div>
         </div>
     )
 }

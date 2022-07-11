@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import './App.css';
-import {Settings} from "./Components/Settings";
-import {Counter} from "./Components/Counter";
+import {Settings} from "./Components/Settings/Settings";
+import {Counter} from "./Components/Counter/Counter";
 
 
 function App() {
@@ -18,6 +18,21 @@ function App() {
 
     const [countValue, setCountValue] = useState<number>(startValue)
 
+    const constructError = (start: number, end: number) => {
+        setError(null)
+        if (start < 0) {
+            setError("wrong start")
+        }
+
+        if (end <= start) {
+            setError("wrong max")
+        }
+
+        if (start < 0 && end <= start) {
+            setError("wrong start, wrong max")
+        }
+    }
+
     useEffect(() => {
         const countValueFromLS = localStorage.getItem(localStorageKeys.countValue)
         if (countValueFromLS) {
@@ -33,6 +48,9 @@ function App() {
         if (endValueFromLS) {
             setEndValue(JSON.parse(endValueFromLS))
         }
+
+
+        if(startValueFromLS && endValueFromLS) constructError(JSON.parse(startValueFromLS), JSON.parse(endValueFromLS))
 
     }, [])
 
@@ -70,6 +88,7 @@ function App() {
                 set={setStartEnd}
                 setError={setError}
                 error={error}
+                constructError={constructError}
             />
 
             <Counter

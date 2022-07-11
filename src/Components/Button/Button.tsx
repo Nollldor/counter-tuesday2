@@ -1,4 +1,5 @@
 import {FC} from "react";
+import styles from './Button.module.css'
 
 type ButtonPropsType = {
     title: string,
@@ -9,6 +10,6 @@ type ButtonPropsType = {
 export const Button: FC<ButtonPropsType> = ({title, onClick, disabled}) => {
 
     return (
-        <button onClick={onClick} disabled={disabled}>{title}</button>
+        <button className={styles.button} onClick={onClick} disabled={disabled}>{title}</button>
     )
 }

@@ -1,0 +1,9 @@
+.input {
+    outline: none;
+    border: 3px solid green;
+}
+
+.inputError {
+    border: 3px solid red;
+    background: lightcoral;
+}

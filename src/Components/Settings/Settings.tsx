@@ -1,6 +1,7 @@
 import React, {FC, useEffect, useState} from "react";
-import {InputNumber} from "./InputNumber";
-import {Button} from "./Button";
+import {InputNumber} from "../InputNumber/InputNumber";
+import {Button} from "../Button/Button";
+import styles from './Settings.module.css'
 
 type SettingsPropsType = {
     start: number
@@ -11,6 +12,7 @@ type SettingsPropsType = {
     setWaitSettings: (mode: boolean) => void
     setError: (error: string | null) => void
     error: string | null
+    constructError: (start: number, end: number) => void
 }
 
 export const Settings: FC<SettingsPropsType> = ({
@@ -22,27 +24,29 @@ export const Settings: FC<SettingsPropsType> = ({
                                                     setWaitSettings,
                                                     setError,
                                                     error,
+                                                    constructError,
                                                     ...props
                                                 }) => {
 
+    const [disableSetButton, setDisableSetButton] = useState(true)
+
     const onChangeStart = (value: string) => {
         changeStart(JSON.parse(value))
+        constructError(JSON.parse(value), end)
         if (JSON.parse(value) >= 0 && JSON.parse(value) < end) {
             setWaitSettings(true)
-            setError(null)
-        } else {
-            setError("wrong start")
+            setDisableSetButton(false)
         }
+
+
     }
 
     const onChangeEnd = (value: string) => {
         changeEnd(JSON.parse(value))
-
+        constructError(start, JSON.parse(value))
         if (JSON.parse(value) > start) {
             setWaitSettings(true)
-            setError(null)
-        } else {
-            setError("wrong end")
+            setDisableSetButton(false)
         }
 
     }
@@ -50,14 +54,26 @@ export const Settings: FC<SettingsPropsType> = ({
     const setHandler = () => {
         set()
         setWaitSettings(false)
+        setDisableSetButton(true)
     }
 
 
     return (
-        <div>
-            <InputNumber value={start} onChange={onChangeStart}/>
-            <InputNumber value={end} onChange={onChangeEnd}/>
-            <Button title={"set"} disabled={error !== null} onClick={setHandler}/>
+        <div className={styles.settings}>
+            <div className={styles.inputsBlock}>
+                <div className={styles.inputsTitles}>
+                    <span>start value:</span>
+                    <span>max value:</span>
+                </div>
+                <div className={styles.inputs}>
+                    <InputNumber value={start} onChange={onChangeStart} error={error?.includes("wrong start")}/>
+                    <InputNumber value={end} onChange={onChangeEnd} error={error?.includes("wrong max")}/>
+                </div>
+            </div>
+            <div className={styles.buttons}>
+                <Button title={"set"} disabled={error !== null || disableSetButton} onClick={setHandler}/>
+            </div>
+
         </div>
     )
 }
