@@ -2,6 +2,8 @@ import React, {FC, useEffect, useState} from "react";
 import {InputNumber} from "../InputNumber/InputNumber";
 import {Button} from "../Button/Button";
 import styles from './Settings.module.css'
+import {NavLink} from "react-router-dom";
+import {Path} from "../../App";
 
 type SettingsPropsType = {
     start: number
@@ -71,7 +73,9 @@ export const Settings: FC<SettingsPropsType> = ({
                 </div>
             </div>
             <div className={styles.buttons}>
-                <Button title={"set"} disabled={error !== null || disableSetButton} onClick={setHandler}/>
+                <NavLink to={Path.counter}>
+                    <Button title={"set"} disabled={error !== null || disableSetButton} onClick={setHandler}/>
+                </NavLink>
             </div>
 
         </div>

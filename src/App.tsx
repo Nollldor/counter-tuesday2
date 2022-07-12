@@ -2,7 +2,15 @@ import React, {useEffect, useState} from 'react';
 import './App.css';
 import {Settings} from "./Components/Settings/Settings";
 import {Counter} from "./Components/Counter/Counter";
+import {HashRouter, Navigate, Route, Routes} from "react-router-dom";
 
+type PathType = {
+    [key: string]: string
+}
+export const Path: PathType = {
+    counter: '/counter',
+    settings: '/settings'
+}
 
 function App() {
     const localStorageKeys = {
@@ -23,9 +31,9 @@ function App() {
 
         if (start < 0 && end <= start) {
             setError("wrong start, wrong max")
-        }else if(end <= start){
+        } else if (end <= start) {
             setError("wrong max")
-        }else if (start < 0) {
+        } else if (start < 0) {
             setError("wrong start")
         }
     }
@@ -47,7 +55,7 @@ function App() {
         }
 
 
-        if(startValueFromLS && endValueFromLS) constructError(JSON.parse(startValueFromLS), JSON.parse(endValueFromLS))
+        if (startValueFromLS && endValueFromLS) constructError(JSON.parse(startValueFromLS), JSON.parse(endValueFromLS))
 
     }, [])
 
@@ -72,32 +80,39 @@ function App() {
         setCountValue(startValue)
     }
 
-
     return (
         <div className="App">
+            <HashRouter>
+                <Routes>
+                    <Route path={'/'} element={<Navigate to={Path.settings}/>}/>
 
-            <Settings
-                start={startValue}
-                end={endValue}
-                changeStart={setStartValue}
-                changeEnd={setEndValue}
-                setWaitSettings={setWaitSettings}
-                set={setStartEnd}
-                setError={setError}
-                error={error}
-                constructError={constructError}
-            />
+                    <Route path={Path.counter} element={
+                        <Counter
+                            start={startValue}
+                            end={endValue}
+                            count={countValue}
+                            inc={incCount}
+                            reset={resetCount}
+                            waitSettings={waitSettings}
+                            error={error}
+                        />
+                    }/>
 
-            <Counter
-                start={startValue}
-                end={endValue}
-                count={countValue}
-                inc={incCount}
-                reset={resetCount}
-                waitSettings={waitSettings}
-                error={error}
-            />
-
+                    <Route path={Path.settings} element={
+                        <Settings
+                            start={startValue}
+                            end={endValue}
+                            changeStart={setStartValue}
+                            changeEnd={setEndValue}
+                            setWaitSettings={setWaitSettings}
+                            set={setStartEnd}
+                            setError={setError}
+                            error={error}
+                            constructError={constructError}
+                        />
+                    }/>
+                </Routes>
+            </HashRouter>
         </div>
     );
 }
