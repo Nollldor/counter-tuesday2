@@ -21,9 +21,7 @@ function App() {
 
     const [startValue, setStartValue] = useState<number>(0)
     const [endValue, setEndValue] = useState<number>(10)
-    const [waitSettings, setWaitSettings] = useState<boolean>(false)
     const [error, setError] = useState<string | null>(null)
-
     const [countValue, setCountValue] = useState<number>(startValue)
 
     const constructError = (start: number, end: number) => {
@@ -40,23 +38,15 @@ function App() {
 
     useEffect(() => {
         const countValueFromLS = localStorage.getItem(localStorageKeys.countValue)
-        if (countValueFromLS) {
-            setCountValue(JSON.parse(countValueFromLS))
-        }
-
         const startValueFromLS = localStorage.getItem(localStorageKeys.startValue)
-        if (startValueFromLS) {
-            setStartValue(JSON.parse(startValueFromLS))
-        }
-
         const endValueFromLS = localStorage.getItem(localStorageKeys.endValue)
-        if (endValueFromLS) {
-            setEndValue(JSON.parse(endValueFromLS))
+
+        if (countValueFromLS && startValueFromLS && endValueFromLS) {
+            setCountValue(+countValueFromLS)
+            setStartValue(+startValueFromLS)
+            setEndValue(+endValueFromLS)
+            constructError(+startValueFromLS, +endValueFromLS)
         }
-
-
-        if (startValueFromLS && endValueFromLS) constructError(JSON.parse(startValueFromLS), JSON.parse(endValueFromLS))
-
     }, [])
 
     useEffect(() => {
@@ -75,8 +65,6 @@ function App() {
     }
 
     const setStartEnd = () => {
-        setStartValue(startValue)
-        setEndValue(endValue)
         setCountValue(startValue)
     }
 
@@ -93,7 +81,6 @@ function App() {
                             count={countValue}
                             inc={incCount}
                             reset={resetCount}
-                            waitSettings={waitSettings}
                             error={error}
                         />
                     }/>
@@ -104,7 +91,6 @@ function App() {
                             end={endValue}
                             changeStart={setStartValue}
                             changeEnd={setEndValue}
-                            setWaitSettings={setWaitSettings}
                             set={setStartEnd}
                             setError={setError}
                             error={error}

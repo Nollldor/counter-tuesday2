@@ -11,7 +11,6 @@ type SettingsPropsType = {
     changeStart: (value: number) => void
     changeEnd: (value: number) => void
     set: () => void
-    setWaitSettings: (mode: boolean) => void
     setError: (error: string | null) => void
     error: string | null
     constructError: (start: number, end: number) => void
@@ -23,39 +22,31 @@ export const Settings: FC<SettingsPropsType> = ({
                                                     set,
                                                     changeStart,
                                                     changeEnd,
-                                                    setWaitSettings,
                                                     setError,
                                                     error,
                                                     constructError,
                                                     ...props
                                                 }) => {
-
-    const [disableSetButton, setDisableSetButton] = useState(true)
+    console.log(error)
+    const [disableSetButton, setDisableSetButton] = useState(error!==null? true : false)
 
     const onChangeStart = (value: string) => {
-        changeStart(JSON.parse(value))
-        constructError(JSON.parse(value), end)
-        if (JSON.parse(value) >= 0 && JSON.parse(value) < end) {
-            setWaitSettings(true)
-            setDisableSetButton(false)
-        }
+        changeStart(+value)
+        constructError(+value, end)
+        setDisableSetButton(+value < 0 || +value >= end)
 
 
     }
 
     const onChangeEnd = (value: string) => {
-        changeEnd(JSON.parse(value))
-        constructError(start, JSON.parse(value))
-        if (JSON.parse(value) > start) {
-            setWaitSettings(true)
-            setDisableSetButton(false)
-        }
+        changeEnd(+value)
+        constructError(start, +value)
+        setDisableSetButton(+value <= start)
 
     }
 
     const setHandler = () => {
         set()
-        setWaitSettings(false)
         setDisableSetButton(true)
     }
 
@@ -74,7 +65,7 @@ export const Settings: FC<SettingsPropsType> = ({
             </div>
             <div className={styles.buttons}>
                 <NavLink to={Path.counter}>
-                    <Button title={"set"} disabled={error !== null || disableSetButton} onClick={setHandler}/>
+                    <Button title={"set"} disabled={disableSetButton} onClick={setHandler}/>
                 </NavLink>
             </div>
 
